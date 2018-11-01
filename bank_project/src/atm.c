@@ -76,6 +76,7 @@ int atm(int bank_out_fd, int atm_in_fd, int atm_id, Command *cmd)
   cmd_unpack(cmd, &c, &i, &f, &t, &a);
 
   int status = SUCCESS;
+  
 
   // TODO: your code here
 
@@ -93,6 +94,20 @@ int atm(int bank_out_fd, int atm_in_fd, int atm_id, Command *cmd)
 
   if (status != SUCCESS) {
     return status;
+  }
+  
+  cmd_unpack(&atmcmd, &c, &i, &f, &t, &a);
+
+  if (atmcmd.cmd[0] == OK) {
+    status = SUCCESS;
+  } else if (atmcmd.cmd[0] == NOFUNDS) {
+    status = ERR_NOFUNDS;
+  } else if (atmcmd.cmd[0] == ACCUNKN) {
+    status = ERR_UNKNOWN_ACCOUNT;
+  } else {
+    char *message = "Unknow command";
+    error_msg(ERR_UNKNOWN_CMD,message);
+    status = ERR_UNKNOWN_CMD;
   }
 
 
